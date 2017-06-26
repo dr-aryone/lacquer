@@ -35,7 +35,7 @@ module Lacquer
     end
 
     def to_vcl_conditions4(urls = store)
-      urls.map { |opt| %Q[beresp.url ~ "#{(opt[:url] % opt[:args])}"] }.join(" || ")
+      urls.map { |opt| %Q[bereq.url ~ "#{(opt[:url] % opt[:args])}"] }.join(" || ")
     end
 
     def to_vcl_override_ttl_urls
