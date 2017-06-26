@@ -34,10 +34,14 @@ module Lacquer
       urls.map { |opt| %Q[req.url ~ "#{(opt[:url] % opt[:args])}"] }.join(" || ")
     end
 
+    def to_vcl_conditions4(urls = store)
+      urls.map { |opt| %Q[beresp.url ~ "#{(opt[:url] % opt[:args])}"] }.join(" || ")
+    end
+
     def to_vcl_override_ttl_urls
       urls_grouped_by_expires.map do |expires_in, list|
         <<-CODE.gsub(/^[ \t]{4}*/, '')
-        if(#{to_vcl_conditions(list)}) {
+        if(#{to_vcl_conditions4(list)}) {
           unset beresp.http.Set-Cookie;
           set beresp.ttl = #{expires_in};
           return(deliver);
